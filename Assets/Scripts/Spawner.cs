@@ -13,8 +13,8 @@ public class Spawner : MonoBehaviour
     private void Awake()
     {
         _pool = new ObjectPool<Cube>(
-         createFunc: () => CreateCubeInstance(),
-         actionOnGet: (cube) => OnActionGet(cube),
+         createFunc: CreateCubeInstance,
+         actionOnGet: OnActionGet,
          actionOnRelease: (cube) => cube.gameObject.SetActive(false),
          actionOnDestroy: (cube) => Destroy(cube.gameObject),
          collectionCheck: true,
@@ -47,17 +47,16 @@ public class Spawner : MonoBehaviour
 
     private Vector3 GetRandomPointInArea()
     {
-        float x = Random.Range(transform.position.x - transform.lossyScale.x, transform.position.x + transform.lossyScale.x);
-        float y = transform.position.y;
-        float z = Random.Range(transform.position.z - transform.lossyScale.z, transform.position.z + transform.lossyScale.z);
+        float positionX = Random.Range(transform.position.x - transform.lossyScale.x, transform.position.x + transform.lossyScale.x);
+        float positionY = transform.position.y;
+        float positionZ = Random.Range(transform.position.z - transform.lossyScale.z, transform.position.z + transform.lossyScale.z);
 
-        return new Vector3(x, y, z);
+        return new Vector3(positionX, positionY, positionZ);
     }
 
     private void OnActionGet(Cube cube)
     {
         cube.transform.position = GetRandomPointInArea();
-        cube.GetComponent<Rigidbody>().velocity = Vector3.zero;
         cube.gameObject.SetActive(true);
     }
 }
