@@ -15,32 +15,26 @@ public class Spawner : MonoBehaviour
     {
         _pool = new ObjectPool<Cube>(
          createFunc: CreateCubeInstance,
-         actionOnGet: OnActionGet,
+         actionOnGet: OnGetting,
          actionOnRelease: (cube) => cube.gameObject.SetActive(false),
          actionOnDestroy: (cube) => Destroy(cube.gameObject),
          collectionCheck: true,
          defaultCapacity: _poolCapacity,
-         maxSize: _poolMaxSize
-         );
+         maxSize: _poolMaxSize);
     }
 
     private void Start()
     {
-        StartCoroutine(sdsds());        
+        StartCoroutine(GetCubes());        
     }
 
-    private IEnumerator sdsds()
+    private IEnumerator GetCubes()
     {
         while (true)
         {
-            GetCube();
+            _pool.Get();
             yield return new WaitForSeconds(_repeatRate);
         }
-    }
-
-    private void GetCube()
-    {
-        _pool.Get();
     }
 
     private void ReleaseCube(Cube cube)
@@ -64,7 +58,7 @@ public class Spawner : MonoBehaviour
         return new Vector3(positionX, positionY, positionZ);
     }
 
-    private void OnActionGet(Cube cube)
+    private void OnGetting(Cube cube)
     {
         cube.transform.position = GetRandomPointInArea();
         cube.gameObject.SetActive(true);

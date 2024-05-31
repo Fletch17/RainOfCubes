@@ -49,7 +49,7 @@ public class Cube : MonoBehaviour
     {
         if (_isTouchedLayer == false)
         {
-            if (collision.gameObject.TryGetComponent<Platform>(out Platform platform))
+            if (collision.gameObject.TryGetComponent(out Platform platform))
             {
                 _isTouchedLayer = true;
                 ChangeColor(Random.ColorHSV());                
