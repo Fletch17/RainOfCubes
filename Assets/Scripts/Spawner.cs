@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -25,7 +26,16 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        InvokeRepeating(nameof(GetCube), 0.0f, _repeatRate);
+        StartCoroutine(sdsds());        
+    }
+
+    private IEnumerator sdsds()
+    {
+        while (true)
+        {
+            GetCube();
+            yield return new WaitForSeconds(_repeatRate);
+        }
     }
 
     private void GetCube()
