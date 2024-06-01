@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer), typeof(Rigidbody))]
@@ -7,13 +8,12 @@ public class Cube : MonoBehaviour
     [SerializeField] private int _maxLifeTime = 5;
 
     private float _lifeTime;
-    private float _currentTime = 0;
     private bool _isTouchedLayer = false;
     private Color _defaultColor;
     private Renderer _renderer;
     private Rigidbody _rigidbody;
 
-    public event System.Action<Cube> OnReleased;
+    public event System.Action<Cube> Released;
 
     private void Awake()
     {
@@ -25,24 +25,16 @@ public class Cube : MonoBehaviour
 
     private void OnEnable()
     {
-        _currentTime = 0;
         _isTouchedLayer = false;
         _rigidbody.velocity = Vector3.zero;
         _lifeTime = Random.Range(_minLifeTime, _maxLifeTime + 1);
         ChangeColor(_defaultColor);
     }
 
-    private void Update()
+    private IEnumerator StartCubeAging()
     {
-        if (_isTouchedLayer)
-        {
-            _currentTime += Time.deltaTime;
-
-            if (_currentTime >= _lifeTime)
-            {
-                OnReleased?.Invoke(this);
-            }
-        }
+        yield return new WaitForSeconds(_lifeTime);
+        Released?.Invoke(this);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -52,6 +44,7 @@ public class Cube : MonoBehaviour
             if (collision.gameObject.TryGetComponent(out Platform platform))
             {
                 _isTouchedLayer = true;
+                StartCoroutine(StartCubeAging());
                 ChangeColor(Random.ColorHSV());                
             }
         }

@@ -7,7 +7,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Cube _prefab;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _poolMaxSize;
-    [SerializeField] float _repeatRate;
+    [SerializeField] private float _repeatRate;
 
     private ObjectPool<Cube> _pool;
 
@@ -25,15 +25,17 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(GetCubes());        
+        StartCoroutine(RetrieveCubeFromPool());        
     }
 
-    private IEnumerator GetCubes()
+    private IEnumerator RetrieveCubeFromPool()
     {
+        var delay = new WaitForSeconds(_repeatRate);
+
         while (true)
         {
             _pool.Get();
-            yield return new WaitForSeconds(_repeatRate);
+            yield return delay;
         }
     }
 
@@ -45,7 +47,7 @@ public class Spawner : MonoBehaviour
     private Cube CreateCubeInstance()
     {
         Cube cube = Instantiate(_prefab);
-        cube.OnReleased += ReleaseCube;
+        cube.Released += ReleaseCube;
         return cube;
     }
 
